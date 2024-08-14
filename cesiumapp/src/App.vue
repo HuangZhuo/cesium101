@@ -2,7 +2,7 @@
 import * as Cesium from 'cesium';
 import { onMounted } from 'vue';
 onMounted(async () => {
-  Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxNGE4YmE0ZC1mNDkxLTQyMWYtOTA5Zi0xODdiZjYyZWQ0ZWQiLCJpZCI6MjM0NjYwLCJpYXQiOjE3MjM2MTMyMzJ9.0Ytps_E_feRZQ5L0dS_iaC5ZmKsLctBSYEruYuyqJXE'
+  Cesium.ArcGisMapService.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxNGE4YmE0ZC1mNDkxLTQyMWYtOTA5Zi0xODdiZjYyZWQ0ZWQiLCJpZCI6MjM0NjYwLCJpYXQiOjE3MjM2MTMyMzJ9.0Ytps_E_feRZQ5L0dS_iaC5ZmKsLctBSYEruYuyqJXE'
 
   const imgProvider = Cesium.ArcGisMapServerImageryProvider.fromUrl(
     'https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
@@ -30,6 +30,30 @@ onMounted(async () => {
       heading: Cesium.Math.toRadians(0),
       pitch: Cesium.Math.toRadians(-45),
     }
+  });
+
+  // 加载建筑群
+  // https://sandcastle.cesium.com/?src=3D%20Tiles%20Feature%20Styling.html&label=Beginner
+  const osmBuildingsTileset = await Cesium.createOsmBuildingsAsync();
+  viewer.scene.primitives.add(osmBuildingsTileset);
+
+  // https://cesium.com/learn/cesiumjs/ref-doc/Cesium3DTileStyle.html?classFilter=Cesium3DTileStyle
+  osmBuildingsTileset.style = new Cesium.Cesium3DTileStyle({
+    defines: {
+      material: "${feature['building:material']}",
+    },
+    color: {
+      conditions: [
+        ["${material} === null", "color('white')"],
+        ["${material} === 'glass'", "color('skyblue', 0.5)"],
+        ["${material} === 'concrete'", "color('grey')"],
+        ["${material} === 'brick'", "color('indianred')"],
+        ["${material} === 'stone'", "color('lightslategrey')"],
+        ["${material} === 'metal'", "color('lightgrey')"],
+        ["${material} === 'steel'", "color('lightsteelblue')"],
+        ["true", "color('white')"], // This is the else case
+      ],
+    },
   });
 })
 
