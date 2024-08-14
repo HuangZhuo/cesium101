@@ -55,6 +55,62 @@ onMounted(async () => {
       ],
     },
   });
+
+  /**
+   * P6 区域划分和渲染
+   * https://sandcastle.cesium.com/?src=GeoJSON%20and%20TopoJSON.html&label=DataSources
+   */
+
+  // const geoJsonPromise = Cesium.GeoJsonDataSource.load(
+  //   './assets/SampleData/ne_10m_us_states.topojson',
+  //   {
+  //     stroke: Cesium.Color.HOTPINK,
+  //     fill: Cesium.Color.PINK.withAlpha(0.5),
+  //     strokeWidth: 3,
+  //   }
+  // );
+  // viewer.dataSources.add(geoJsonPromise);
+
+  Cesium.GeoJsonDataSource.load(
+    "./assets/SampleData/ne_10m_us_states.topojson"
+  )
+    .then(function (dataSource) {
+      viewer.dataSources.add(dataSource);
+
+      //Get the array of entities
+      const entities = dataSource.entities.values;
+
+      const colorHash = {};
+      for (let i = 0; i < entities.length; i++) {
+        //For each entity, create a random color based on the state name.
+        //Some states have multiple entities, so we store the color in a
+        //hash so that we use the same color for the entire state.
+        const entity = entities[i];
+        const name = entity.name;
+
+        let color = colorHash[name];
+        if (!color) {
+          color = Cesium.Color.fromRandom({
+            alpha: 1.0,
+          });
+          colorHash[name] = color;
+        }
+
+        //Set the polygon material to our random color.
+        entity.polygon.material = color;
+        //Remove the outlines.
+        entity.polygon.outline = false;
+
+        //Extrude the polygon based on the state's population.  Each entity
+        //stores the properties for the GeoJSON feature it was created from
+        //Since the population is a huge number, we divide by 50.
+        entity.polygon.extrudedHeight = entity.properties.Population / 50.0;
+      }
+    })
+    .catch(function (error) {
+      //Display any errrors encountered while loading.
+      window.alert(error);
+    });
 })
 
 </script>
