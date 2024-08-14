@@ -20,6 +20,17 @@ onMounted(async () => {
       requestVertexNormals: true,
     })
   });
+
+  viewer.camera.setView({
+    // destination:Cesium.Cartesian3.fromDegrees(
+    //   113.318977, 23.114155, 2000 // 广州塔
+    // ),
+    destination: new Cesium.Cartesian3(1332761, -4662399, 4137888), // NYC
+    orientation: {
+      heading: Cesium.Math.toRadians(0),
+      pitch: Cesium.Math.toRadians(-45),
+    }
+  });
 })
 
 </script>
