@@ -111,7 +111,24 @@ onMounted(async () => {
       //Display any errrors encountered while loading.
       window.alert(error);
     });
+
+  /**
+   * P7 KML
+   * https://sandcastle.cesium.com/?src=KML.html
+   */
+  const kmlOptions = {
+    camera: viewer.scene.camera,
+    canvas: viewer.scene.canvas,
+    screenOverlayContainer: viewer.container,
+  }
+  viewer.dataSources.add(
+    Cesium.KmlDataSource.load(
+      './assets/SampleData/facilities.kml',
+      kmlOptions,
+    )
+  );
 })
+
 
 </script>
 
