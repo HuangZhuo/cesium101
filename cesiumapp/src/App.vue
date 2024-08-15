@@ -127,6 +127,21 @@ onMounted(async () => {
       kmlOptions,
     )
   );
+
+  /**
+   * P8 CZML
+   * https://sandcastle.cesium.com/?src=CZML.html&label=DataSources
+   */
+  viewer.dataSources.add(
+    Cesium.CzmlDataSource.load('./assets/SampleData/Vehicle.czml')
+  )
+  viewer.scene.camera.setView({
+    destination: Cesium.Cartesian3.fromDegrees(-116.52, 35.02, 95000),
+    orientation: {
+      heading: 6,
+    },
+  })
+
 })
 
 
