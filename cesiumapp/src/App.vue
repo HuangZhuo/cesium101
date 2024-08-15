@@ -4,6 +4,11 @@ import { onMounted } from 'vue';
 onMounted(async () => {
   Cesium.ArcGisMapService.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxNGE4YmE0ZC1mNDkxLTQyMWYtOTA5Zi0xODdiZjYyZWQ0ZWQiLCJpZCI6MjM0NjYwLCJpYXQiOjE3MjM2MTMyMzJ9.0Ytps_E_feRZQ5L0dS_iaC5ZmKsLctBSYEruYuyqJXE'
 
+  /**
+   * P2 Cesium.Viewer
+   * P3 使用自定义 Map Server (Provider)
+   * https://sandcastle.cesium.com/?src=ArcGIS%20MapServer.html&label=Beginner
+   */
   const imgProvider = Cesium.ArcGisMapServerImageryProvider.fromUrl(
     'https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
   )
@@ -12,7 +17,6 @@ onMounted(async () => {
     // 隐藏图层选择器
     baseLayerPicker: false,
     // 设置图像服务器
-    // https://sandcastle.cesium.com/?src=ArcGIS%20MapServer.html&label=Beginner
     baseLayer: Cesium.ImageryLayer.fromProviderAsync(imgProvider),
     // 设置地形服务器
     terrainProvider: await Cesium.createWorldTerrainAsync({
@@ -21,6 +25,9 @@ onMounted(async () => {
     })
   });
 
+  /**
+   * P4 摄像头位置和方向设置
+   */
   viewer.camera.setView({
     // destination:Cesium.Cartesian3.fromDegrees(
     //   113.318977, 23.114155, 2000 // 广州塔
@@ -32,8 +39,10 @@ onMounted(async () => {
     }
   });
 
-  // 加载建筑群
-  // https://sandcastle.cesium.com/?src=3D%20Tiles%20Feature%20Styling.html&label=Beginner
+  /**
+   * P5 加载建筑群并设置样式着色
+   * https://sandcastle.cesium.com/?src=3D%20Tiles%20Feature%20Styling.html&label=Beginner
+   */
   const osmBuildingsTileset = await Cesium.createOsmBuildingsAsync();
   viewer.scene.primitives.add(osmBuildingsTileset);
 
